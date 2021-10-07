@@ -1,32 +1,19 @@
 import React from "react"
-import { GetStaticProps } from "next"
 import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
-import prisma from '../lib/prisma';
+import Post from "../components/Post"
+import { useQuery } from "@apollo/client";
+import { GET_POSTS } from '../querys'
 
-export const getStaticProps: GetStaticProps = async () => {
-  const feed = await prisma.post.findMany({
-    where: { published: true },
-    include: {
-      author: {
-        select: { name: true },
-      },
-    },
-  });
-  return { props: { feed } };
-};
-
-type Props = {
-  feed: PostProps[]
-}
-
-const Blog: React.FC<Props> = (props) => {
+const Blog: React.FC = () => {
+  const { loading, error, data } = useQuery(GET_POSTS);
+    if (loading) return <>Loading...</>;
+    if (error) return <>{`Error! ${error.message}`}</>;
   return (
     <Layout>
       <div className="page">
         <h1>Public Feed</h1>
         <main>
-          {props.feed.map((post) => (
+          {data.feed.map((post) => (
             <div key={post.id} className="post">
               <Post post={post} />
             </div>

@@ -60,7 +60,7 @@ const Post: React.FC<PostProps> = (props) => {
         )}
         {userHasValidSession && postBelongsToUser && (
           <button onClick={() => deletePost(props.id)}>Delete</button>
-        )}; 
+        )} 
       </div>
       <style jsx>{`
         .page {
